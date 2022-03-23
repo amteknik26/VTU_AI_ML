@@ -1,0 +1,38 @@
+import numpy as np
+X = np.array(([2,9],[1,5],[3,6]),dtype=float)
+y = np.array(([92],[86],[89]),dtype=float)
+X = X/np.amax(X,axis=0)
+y=y/100
+
+inputNeurons = 2
+hiddenNeurons = 3
+outputNeurons = 1
+epoch = 1000
+learningRate = 0.6
+
+def sigmoid(x):
+    return 1/(1+np.exp(-x))
+    
+def derivative_sigmoid(x):
+    return x*(1-x)
+    
+wh = np.random.uniform(size=(inputNeurons,hiddenNeurons))
+bh = np.random.uniform(size=(1,hiddenNeurons))
+wo = np.random.uniform(size=(hiddenNeurons,outputNeurons))
+bo = np.random.uniform(size=(1,outputNeurons))
+
+for i in range(epoch):
+    net_h = np.dot(X,wh)+bh
+    sigma_h = sigmoid(net_h)
+    net_o = np.dot(sigma_h,wo)+bo
+    output = sigmoid(net_o)
+    
+    deltaK = (y-output) * derivative_sigmoid(output)
+    deltaH = deltaK.dot(wo.T) * derivative_sigmoid(sigma_h)
+    
+    wo = wo + sigma_h.T.dot(deltaK) * learning_rate
+    wh = wh + X.T.dot(deltaH) * learning_rate
+    
+print("Initial Input \n" + str(X))
+print("Expected Output \n" + str(y))
+print("Predicted Output", output)
